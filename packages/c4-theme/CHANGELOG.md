@@ -8,5 +8,6 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: theme the properties panel ([#1](https://github.com/bpmn-io/themes/pull/1))
 * `FEAT`: theme the diagram canvas, palette, popup menu and search ([#3](https://github.com/bpmn-io/themes/pull/3))
+* `FEAT`: theme dmn-js ([#13](https://github.com/bpmn-io/themes/pull/13))
 * `FEAT`: source colors from [`@bpmn-io/theme`](https://github.com/bpmn-io/themes/tree/main/packages/theme) ([#7](https://github.com/bpmn-io/themes/pull/7))
 * `FEAT`: scope the theme to the design system's `c4-ui` ([#8](https://github.com/bpmn-io/themes/pull/8))

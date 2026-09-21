@@ -43,6 +43,22 @@ import '@bpmn-io/c4-theme/assets/tokens.css';
 import '@bpmn-io/c4-theme/assets/diagram.css';
 ```
 
+To theme dmn-js — the decision table and the literal and boxed expression
+editors — load `dmn.css` after the dmn-js stylesheets. The DRD canvas is
+diagram-js, so it is themed by `diagram.css`:
+
+```js
+import 'dmn-js/dist/assets/dmn-js-shared.css';
+import 'dmn-js/dist/assets/dmn-js-decision-table.css';
+import 'dmn-js/dist/assets/dmn-js-decision-table-controls.css';
+import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
+import 'dmn-js/dist/assets/dmn-js-boxed-expression.css';
+import 'dmn-js/dist/assets/dmn-js-boxed-expression-controls.css';
+import 'dmn-js/dist/assets/dmn-js-drd.css';
+import '@bpmn-io/c4-theme/assets/tokens.css';
+import '@bpmn-io/c4-theme/assets/dmn.css';
+```
+
 Dark mode follows the design system's own `dark` class — the theme carries no
 palette of its own, so it inherits whatever C4 resolves to.
 
@@ -77,6 +93,7 @@ component-specific playgrounds:
 npm run start:properties-panel
 npm run start:diagram
 npm run start:bpmn
+npm run start:dmn
 npm run start:element-template-chooser
 ```
 

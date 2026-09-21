@@ -11,5 +11,6 @@ export default {
   'diagram-js': 'diagram-js/assets/diagram-js.css',
   'bpmn-js': 'bpmn-js/assets/bpmn-js.css',
   '@bpmn-io/properties-panel': 'properties-panel/src/assets/properties-panel.css',
-  'bpmn-js-element-templates': 'bpmn-js-element-templates/assets/element-templates.css'
+  'bpmn-js-element-templates': 'bpmn-js-element-templates/assets/element-templates.css',
+  'dmn-js-shared': 'dmn-js/packages/dmn-js-shared/assets/css/dmn-js-shared.css'
 };

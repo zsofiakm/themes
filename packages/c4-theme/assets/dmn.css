@@ -1,0 +1,89 @@
+/**
+ * Camunda Design System adapter for dmn-js: the decision table and the literal
+ * and boxed expression editors, plus the DRD's own chrome.
+ *
+ * dmn-js exposes its surfaces through `--decision-table-*`, `--table-*`,
+ * `--context-menu-*`, `--edit-button-*`, `--literal-expression-*`,
+ * `--boxed-expression-*` and `--input-*` custom properties, most of which
+ * already follow the `--bio-*` tokens. Only what the design system renders
+ * differently belongs here.
+ *
+ * Each view declares its variables on its own container, so an override has to
+ * target that container — a value inherited from `.dmn-js-parent` would lose to
+ * the one the library declares there.
+ *
+ * The DRD canvas is diagram-js, so its palette, context pad and popup menu are
+ * themed by assets/diagram.css — not here.
+ *
+ * Load this after the dmn-js stylesheets and assets/tokens.css, inside a C4
+ * root.
+ */
+.c4-ui .dmn-decision-table-container {
+  /* dmn-js defaults to Arial; the design system ships its own families */
+  --decision-table-font-family: var(--font-sans);
+
+  /* dmn-js paints these as a filled neutral chip, which the design system has no
+     step for — its only filled action is the near-black primary */
+  --add-column-icon-color: var(--neutral-foreground-strong);
+  --add-column-icon-background-color: var(--neutral-background-subtle);
+  --action-icon-color: var(--neutral-foreground-strong);
+  --action-icon-hover-color: var(--neutral-foreground-strong);
+  --action-icon-hover-background-color: var(--neutral-background-medium);
+}
+
+.c4-ui .dmn-decision-table-container .create-inputs .action-icon,
+.c4-ui .dmn-decision-table-container .add-input .action-icon,
+.c4-ui .dmn-decision-table-container .add-output .action-icon {
+  border: 1px solid var(--input);
+}
+
+.c4-ui .dmn-literal-expression-container {
+  --literal-expression-font-family: var(--font-sans);
+  --literal-expression-font-family-monospace: var(--font-mono);
+}
+
+.c4-ui .dmn-boxed-expression-container {
+  --boxed-expression-font-family: var(--font-sans);
+  --boxed-expression-font-family-monospace: var(--font-mono);
+}
+
+.c4-ui .dmn-drd-container {
+  --drd-font-family-monospace: var(--font-mono);
+}
+
+/**
+ * Structural overrides. dmn-js hard-codes a handful of radii and shadows;
+ * re-derive them from C4 tokens so both light and dark modes stay consistent.
+ */
+
+/* these read as buttons, and the design system's Button is `rounded-lg` */
+.c4-ui .dmn-js-parent .view-drd-button,
+.c4-ui .dmn-js-parent .edit-button,
+.c4-ui .dmn-js-parent .simple-mode-button {
+  border-radius: var(--bio-radius-lg);
+}
+
+.c4-ui .dmn-js-parent .context-menu {
+  border-radius: var(--bio-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* the design system's Command item is `rounded-md` */
+.c4-ui .dmn-js-parent .context-menu-group-entry {
+  border-radius: var(--bio-radius-md);
+}
+
+/* Input is `rounded-lg`, and the select popover follows its trigger */
+.c4-ui .dmn-js-parent .dms-input,
+.c4-ui .dmn-js-parent .dms-select,
+.c4-ui .dmn-js-parent .dms-select-options {
+  border-radius: var(--bio-radius-lg);
+}
+
+/* dmn-js renders this as a plain square button; read it as the design system's
+   secondary Button instead */
+.c4-ui .dmn-boxed-expression-container .formal-parameters .add-parameter {
+  padding: 3px 10px;
+  border: 1px solid var(--input);
+  border-radius: var(--bio-radius-lg);
+}

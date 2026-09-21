@@ -14,13 +14,22 @@ const STYLESHEETS = [
   'node_modules/bpmn-js/dist/assets/bpmn-js.css',
   'node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css',
   'node_modules/@bpmn-io/properties-panel/dist/assets/properties-panel.css',
+  'node_modules/dmn-js-shared/assets/css/dmn-js-shared.css',
+  'node_modules/dmn-font/dist/css/dmn-embedded.css',
+  'node_modules/dmn-js-drd/assets/css/dmn-js-drd.css',
+  'node_modules/dmn-js-decision-table/assets/css/dmn-js-decision-table.css',
+  'node_modules/dmn-js-decision-table/assets/css/dmn-js-decision-table-controls.css',
+  'node_modules/dmn-js-literal-expression/assets/css/dmn-js-literal-expression.css',
+  'node_modules/dmn-js-boxed-expression/assets/css/dmn-js-boxed-expression.css',
+  'node_modules/dmn-js-boxed-expression/assets/css/dmn-js-boxed-expression-controls.css',
+  'packages/theme/assets/theme.css',
   'node_modules/bpmn-js-element-templates/dist/assets/element-templates.css',
   'node_modules/camunda-bpmn-js/styles/popup-menu.css',
   'node_modules/@bpmn-io/element-template-chooser/dist/element-template-chooser.css',
-  'packages/theme/assets/theme.css',
   'packages/c4-theme/assets/tokens.css',
   'packages/c4-theme/assets/properties-panel.css',
   'packages/c4-theme/assets/diagram.css',
+  'packages/c4-theme/assets/dmn.css',
   'test/playground.css'
 ];
 
@@ -78,6 +87,18 @@ function cell(theme, capture) {
     <figcaption>${theme.label}</figcaption>
     <div class="${rootClasses.join(' ')}">
       <div class="djs-container djs-parent bjs-container bjs-breadcrumbs-shown bio-theme-parent capture-surfaces">${capture.diagram.join('\n')}</div>
+    </div>
+  </figure>`;
+  }
+
+  // dmn scenarios ship the opened view instead of a panel
+  if (capture.dmn) {
+    rootClasses.push('playground--dmn', `capture-cell-dmn capture-cell-dmn--${capture.dmnVariant}`);
+
+    return `<figure class="${figureClasses.join(' ')}">
+    <figcaption>${theme.label}</figcaption>
+    <div class="${rootClasses.join(' ')}">
+      <div class="playground-canvas">${capture.dmn}</div>
     </div>
   </figure>`;
   }
@@ -148,6 +169,20 @@ ${styles()}
   }
   .capture-cell.dark .capture-cell-panel { border-color: #27272a; background: #18181b; }
   .capture-cell-panel .bio-properties-panel { height: auto; }
+
+  /* the DRD is a diagram-js canvas and renders nothing without an explicit size */
+  .capture-cell-dmn {
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 640px;
+    border: 1px solid rgba(0, 0, 0, .12);
+    background: #ffffff;
+  }
+  .capture-cell.dark .capture-cell-dmn { border-color: #27272a; background: #18181b; }
+  .capture-cell-dmn--drd .playground-canvas { width: 640px; height: 420px; }
+  .capture-cell-dmn .dmn-decision-table-container,
+  .capture-cell-dmn .dmn-literal-expression-container,
+  .capture-cell-dmn .dmn-boxed-expression-container { height: auto; }
 
   /*
    * Diagram scenarios: the palette, search pad and popup menu mount inside the

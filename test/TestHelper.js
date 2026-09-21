@@ -1,4 +1,5 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import DmnModeler from 'dmn-js/lib/Modeler';
 import TestContainer from 'mocha-test-container-support';
 import {
   BpmnPropertiesPanelModule,
@@ -32,7 +33,7 @@ import ZeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json';
 import ThemeControlsModule from './ThemeControlsProvider.js';
 
 import camundaDesignSystemCss from '@camunda/design-system/styles.css';
-import diagramJsCss from 'bpmn-js/dist/assets/diagram-js.css';
+import diagramJsCss from 'diagram-js/assets/diagram-js.css';
 import bpmnJsCss from 'bpmn-js/dist/assets/bpmn-js.css';
 import bpmnFontCss from 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import propertiesPanelCss from '@bpmn-io/properties-panel/dist/assets/properties-panel.css';
@@ -40,13 +41,24 @@ import elementTemplateChooserCss from '@bpmn-io/element-template-chooser/dist/el
 import elementTemplatesCss from 'bpmn-js-element-templates/dist/assets/element-templates.css';
 import popupMenuCss from 'camunda-bpmn-js/styles/popup-menu.css';
 
+import dmnSharedCss from 'dmn-js-shared/assets/css/dmn-js-shared.css';
+import dmnFontCss from 'dmn-font/dist/css/dmn-embedded.css';
+import dmnDrdCss from 'dmn-js-drd/assets/css/dmn-js-drd.css';
+import dmnDecisionTableCss from 'dmn-js-decision-table/assets/css/dmn-js-decision-table.css';
+import dmnDecisionTableControlsCss from 'dmn-js-decision-table/assets/css/dmn-js-decision-table-controls.css';
+import dmnLiteralExpressionCss from 'dmn-js-literal-expression/assets/css/dmn-js-literal-expression.css';
+import dmnBoxedExpressionCss from 'dmn-js-boxed-expression/assets/css/dmn-js-boxed-expression.css';
+import dmnBoxedExpressionControlsCss from 'dmn-js-boxed-expression/assets/css/dmn-js-boxed-expression-controls.css';
+
 import baseThemeCss from '@bpmn-io/theme/assets/theme.css';
 import tokensCss from '@bpmn-io/c4-theme/assets/tokens.css';
 import propertiesPanelThemeCss from '@bpmn-io/c4-theme/assets/properties-panel.css';
 import diagramThemeCss from '@bpmn-io/c4-theme/assets/diagram.css';
+import dmnThemeCss from '@bpmn-io/c4-theme/assets/dmn.css';
 import playgroundCss from './playground.css';
 
 import defaultDiagram from './fixtures/playground.bpmn';
+import defaultDmnDiagram from './fixtures/playground.dmn';
 import manyInputsDiagram from './fixtures/many-inputs.bpmn';
 
 let stylesInserted = false;
@@ -364,6 +376,50 @@ export {
   manyInputsDiagram
 };
 
+export async function createDmnPlayground(context, name, options = {}) {
+  insertStyles();
+
+  const {
+    diagram = defaultDmnDiagram,
+    view = 'drd'
+  } = options;
+
+  const root = document.createElement('div');
+
+  root.className = 'playground playground--dmn';
+  root.dataset.playground = name;
+  root.dataset.dmnVariant = view;
+  root.innerHTML = '<div class="playground-main"><div class="playground-canvas"></div></div>';
+
+  TestContainer.get(context).appendChild(root);
+  applyTheme();
+
+  const modeler = new DmnModeler({
+    container: root.querySelector('.playground-canvas')
+  });
+
+  await modeler.importXML(diagram);
+
+  await modeler.open(modeler.getViews().find(({ type }) => type === view));
+
+  const playground = {
+    root,
+    modeler,
+    destroy() {
+      modeler.destroy();
+      root.remove();
+    }
+  };
+
+  if (shouldKeepPlayground()) {
+    const registry = window.__playgrounds__ || (window.__playgrounds__ = {});
+
+    registry[name] = playground;
+  }
+
+  return playground;
+}
+
 function insertStyles() {
   if (stylesInserted) {
     return;
@@ -383,6 +439,15 @@ function insertStyles() {
   insertStyle('bpmn-font.css', bpmnFontCss);
   insertStyle('properties-panel.css', propertiesPanelCss);
 
+  insertStyle('dmn-js-shared.css', dmnSharedCss);
+  insertStyle('dmn-font.css', dmnFontCss);
+  insertStyle('dmn-js-drd.css', dmnDrdCss);
+  insertStyle('dmn-js-decision-table.css', dmnDecisionTableCss);
+  insertStyle('dmn-js-decision-table-controls.css', dmnDecisionTableControlsCss);
+  insertStyle('dmn-js-literal-expression.css', dmnLiteralExpressionCss);
+  insertStyle('dmn-js-boxed-expression.css', dmnBoxedExpressionCss);
+  insertStyle('dmn-js-boxed-expression-controls.css', dmnBoxedExpressionControlsCss);
+
   // the libraries copy the tokens into their own stylesheets once released;
   // until then the installed copies carry none, so the playground supplies them
   insertStyle('bio-theme.css', baseThemeCss);
@@ -392,6 +457,7 @@ function insertStyles() {
   insertStyle('c4-tokens.css', tokensCss);
   insertStyle('c4-properties-panel.css', propertiesPanelThemeCss);
   insertStyle('c4-diagram.css', diagramThemeCss);
+  insertStyle('c4-dmn.css', dmnThemeCss);
   insertStyle('playground.css', playgroundCss);
 
   insertThemeSwitcher();

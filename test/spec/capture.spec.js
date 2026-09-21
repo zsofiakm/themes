@@ -132,6 +132,33 @@ after(function() {
       return;
     }
 
+    // dmn scenarios ship the opened view, which is neither a canvas nor a panel
+    if (name.startsWith('dmn')) {
+      const surface = root.querySelector('.playground-canvas');
+
+      if (!surface || !surface.innerHTML.trim()) {
+        return;
+      }
+
+      seen.add(name);
+
+      const clone = surface.cloneNode(true);
+
+      bakeGeometry(surface, clone);
+
+      const payload = JSON.stringify({
+        dmn: clone.innerHTML,
+        dmnVariant: root.dataset.dmnVariant || 'drd',
+        runtimeStyles
+      });
+
+      const encoded = btoa(unescape(encodeURIComponent(payload)));
+
+      console.log(`CAPTURE::${name}::${encoded}`);
+
+      return;
+    }
+
     const panel = root.querySelector('.playground-properties');
 
     if (!panel || !panel.innerHTML.trim()) {
